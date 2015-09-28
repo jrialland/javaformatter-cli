@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<?xml version="1.0" encoding="UTF-8"?><configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -9,14 +8,13 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.github.jrialland.javaformatter" level="info"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
+	<logger name="com.github.jrialland.javaformatter" level="info" additivity="false">
+		<appender-ref ref="STDOUT"/>
 	</logger>
 
 	<!-- default level -->
 	<root level="error">
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="STDOUT"/>
 	</root>
 
 </configuration>
