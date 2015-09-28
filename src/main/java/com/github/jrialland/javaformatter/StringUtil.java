@@ -1,4 +1,4 @@
-/* (c) ${year} Julien Rialland
+/* (c) 2015 Julien Rialland
  */
 package com.github.jrialland.javaformatter;
 

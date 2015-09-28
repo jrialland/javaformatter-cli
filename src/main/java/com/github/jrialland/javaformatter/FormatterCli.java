@@ -1,4 +1,4 @@
-/* (c) ${year} Julien Rialland
+/* (c) 2015 Julien Rialland
  */
 package com.github.jrialland.javaformatter;
 
@@ -25,7 +25,7 @@ public class FormatterCli {
 		Options opts = new Options();
 
 		Option conf = Option.builder("c").longOpt("conf").required(false).numberOfArgs(1)
-				.desc("Eclipse configuration file to use").argName("url").build();
+				.desc("Eclipse configuration file to use").argName("eclipseConf").build();
 		opts.addOption(conf);
 
 		Option level = Option.builder("l").longOpt("level").required(false).numberOfArgs(1).argName("javaVersion")
@@ -57,7 +57,7 @@ public class FormatterCli {
 		JavaFormatter formatter;
 
 		if (cmd.hasOption("conf")) {
-			formatter = new JavaFormatter(new URL(cmd.getOptionValue("conf")));
+			formatter = new JavaFormatter(Paths.get(cmd.getOptionValue("conf")).toUri().toURL());
 		} else {
 			formatter = new JavaFormatter();
 		}
