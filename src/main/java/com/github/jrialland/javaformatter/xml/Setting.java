@@ -49,8 +49,4 @@ public class Setting {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-	public static void main(String[] args) {
-
-	}
 }
