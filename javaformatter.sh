@@ -18,7 +18,7 @@ if [ ! -f $jarfile ]; then
     popd >/dev/null
 fi
 CLASSPATH=$jarfile
-for j in `find /tmp/javaformatter-cli/target/dependency -name "*.jar"`; do
+for j in `find $tmpdir/javaformatter-cli/target/dependency -name "*.jar"`; do
     export CLASSPATH=$CLASSPATH:$j
 done
 java -cp "$CLASSPATH" com.github.jrialland.javaformatter.FormatterCli $@
