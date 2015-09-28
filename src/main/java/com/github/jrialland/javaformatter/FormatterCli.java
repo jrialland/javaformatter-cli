@@ -76,8 +76,9 @@ public class FormatterCli {
 
 		CommandLine cmd = new DefaultParser().parse(opts, args);
 
-		if (cmd.hasOption("h")) {
+		if (cmd.hasOption("help")) {
 			showHelp(opts);
+			return;
 		}
 
 		JavaFormatter formatter;
@@ -112,9 +113,9 @@ public class FormatterCli {
 		Path path = Paths.get(args[args.length - 1]);
 
 		if (args.length == 0) {
-			System.out.println("missing file or directory parameter.");
+			System.out.println("Missing file or directory parameter.");
 			showHelp(opts);
-			System.exit(-1);
+			System.exit(255);
 		}
 
 		if (Files.isRegularFile(path)) {
