@@ -1,7 +1,9 @@
 package com.github.jrialland.javaformatter;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,9 +44,27 @@ public class JavaFormatter {
 
 	private CodeFormatter codeFormatter;
 
+	private String headerComment;
+
 	public JavaFormatter(URL configUrl) throws IOException, SAXException {
 		options = readConfigurationFormXml(configUrl);
 		codeFormatter = ToolFactory.createCodeFormatter(options);
+	}
+
+	public void setHeader(URL headerUrl) {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			InputStream is = headerUrl.openStream();
+			byte[] buf = new byte[4096];
+			int c = 0;
+			while ((c = is.read(buf)) > -1) {
+				baos.write(buf, 0, c);
+			}
+			is.close();
+			headerComment = StringUtil.toJavaComment(baos.toString("utf-8"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void setSource(String source) {
@@ -112,7 +132,7 @@ public class JavaFormatter {
 		TextEdit textEdit = codeFormatter.format(CodeFormatter.K_COMPILATION_UNIT + CodeFormatter.F_INCLUDE_COMMENTS,
 				javaCode, 0, javaCode.length(), 0, lineSep);
 		if (textEdit == null) {
-			return javaCode;
+			return addHeader(headerComment, javaCode);
 		}
 		IDocument doc = new Document(javaCode);
 		try {
@@ -120,20 +140,29 @@ public class JavaFormatter {
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
-		return doc.get();
+		return addHeader(headerComment, doc.get());
 	}
 
+	private String addHeader(String header, String source) {
+		if(header == null) {
+			return source;
+		} else {
+			return StringUtil.insertHeader(header, source);
+		}
+	}
+	
 	public void formatFile(Path javaFile) throws IOException {
 		LOGGER.info("format " + javaFile.toString());
+		Path tmpFile = Paths.get(javaFile.toString() + "~");
 		// backup
-		Files.copy(javaFile, Paths.get(javaFile.toString() + "~"), StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(javaFile, tmpFile, StandardCopyOption.REPLACE_EXISTING);
 		try {
 			byte[] data = Files.readAllBytes(javaFile);
 			String formatted = format(new String(data, encoding));
 			Files.copy(new ByteArrayInputStream(formatted.getBytes()), javaFile, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {
 			LOGGER.error("while formatting file", e);
-			Files.copy(Paths.get(javaFile.toString() + "~"), javaFile, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(tmpFile, javaFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 
