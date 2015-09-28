@@ -160,6 +160,7 @@ public class JavaFormatter {
 			byte[] data = Files.readAllBytes(javaFile);
 			String formatted = format(new String(data, encoding));
 			Files.copy(new ByteArrayInputStream(formatted.getBytes()), javaFile, StandardCopyOption.REPLACE_EXISTING);
+			Files.delete(tmpFile);
 		} catch (Exception e) {
 			LOGGER.error("while formatting file", e);
 			Files.copy(tmpFile, javaFile, StandardCopyOption.REPLACE_EXISTING);
