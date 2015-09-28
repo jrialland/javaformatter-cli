@@ -25,8 +25,7 @@ public class XmlFormatter {
 	public void formatFile(Path xmlFile) throws IOException {
 		LOGGER.info("format " + xmlFile.toString());
 		Path tmpFile = Paths.get(xmlFile.toString() + "~");
-		Files.copy(xmlFile, tmpFile,
-				StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(xmlFile, tmpFile, StandardCopyOption.REPLACE_EXISTING);
 		try {
 			Transformer transformer = TransformerFactory.newInstance()
 					.newTransformer();
@@ -42,8 +41,7 @@ public class XmlFormatter {
 			Files.delete(tmpFile);
 		} catch (Exception e) {
 			LOGGER.error("while formatting file", e);
-			Files.copy(tmpFile, xmlFile,
-					StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(tmpFile, xmlFile, StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 
