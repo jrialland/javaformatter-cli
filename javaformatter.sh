@@ -6,12 +6,11 @@ which git > /dev/null
 which mvn > /dev/null
 which java > /dev/null
 
-if [ ! -f $jarfile]; then
+if [ ! -f $jarfile ]; then
     pushd /tmp >/dev/null
     git clone https://github.com/jrialland/javaformatter-cli
     pushd javaformatter-cli >/dev/null
-    mvn dependency:copy-dependencies
-    mvn clean package -DskipTests
+    mvn dependency:copy-dependencies package -DskipTests > /dev/null
     popd >/dev/null
     popd >/dev/null
 fi

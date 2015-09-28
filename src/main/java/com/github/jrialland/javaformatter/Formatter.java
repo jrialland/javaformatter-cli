@@ -108,7 +108,7 @@ public class Formatter {
 		TextEdit textEdit = codeFormatter.format(CodeFormatter.K_COMPILATION_UNIT + CodeFormatter.F_INCLUDE_COMMENTS,
 				javaCode, 0, javaCode.length(), 0, lineSep);
 		if (textEdit == null) {
-			throw new IllegalStateException("code format error");
+			return javaCode;
 		}
 		IDocument doc = new Document(javaCode);
 		try {
