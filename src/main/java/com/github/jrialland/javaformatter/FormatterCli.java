@@ -18,7 +18,6 @@ import org.apache.commons.cli.Options;
 
 public class FormatterCli {
 
-	
 	public static void main(String[] args) throws Exception {
 		
 		Options opts = new Options();
@@ -74,13 +73,13 @@ public class FormatterCli {
 			return;
 		}
 		
-		Formatter formatter;
+		JavaFormatter formatter;
 		
 		if(cmd.hasOption("conf")) {
-			formatter = new Formatter(new URL(cmd.getOptionValue("conf")));
+			formatter = new JavaFormatter(new URL(cmd.getOptionValue("conf")));
 		}
 		else {
-			formatter = new Formatter();
+			formatter = new JavaFormatter();
 		}
 		
 		if(cmd.hasOption("level")) {
@@ -105,7 +104,7 @@ public class FormatterCli {
 		if(Files.isRegularFile(path)) {
 			formatter.formatFile(path);
 		} else if(Files.isDirectory(path)) {
-			final Formatter finalFormatter = formatter;
+			final JavaFormatter finalFormatter = formatter;
 			
 			Files.walkFileTree(path, new FileVisitor<Path>() {
 				@Override
@@ -120,6 +119,8 @@ public class FormatterCli {
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					if(file.getFileName().toString().endsWith(".java")) {
 						finalFormatter.formatFile(file);
+					} else if(file.getFileName().toString().endsWith(".xml")) {
+						new XmlFormatter().formatFile(file);
 					}
 					return FileVisitResult.CONTINUE;
 				}
