@@ -1,3 +1,5 @@
+/* (c) ${year} Julien Rialland
+ */
 package com.github.jrialland.javaformatter.xml;
 
 import java.util.HashMap;

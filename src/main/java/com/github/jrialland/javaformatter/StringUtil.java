@@ -1,9 +1,14 @@
+/* (c) ${year} Julien Rialland
+ */
 package com.github.jrialland.javaformatter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,12 +31,21 @@ public final class StringUtil {
 				sw.append("\n");
 			}
 			sw.append(" */\n");
-			return sw.toString();
+			String comment = sw.toString();
+			
+			Date date = new Date();
+			
+			comment = comment.replaceAll("\\$\\{year\\}", new SimpleDateFormat("yyyy").format(date));
+			comment = comment.replaceAll("\\$\\{month\\}", new SimpleDateFormat("MM").format(date));
+			comment = comment.replaceAll("\\$\\{day\\}", new SimpleDateFormat("dd").format(date));
+			for(Entry<String, String> entry : System.getenv().entrySet()) {
+				comment = comment.replaceAll("\\$\\{env\\."+entry.getKey()+"\\}", entry.getValue());
+			}
+			return comment;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
 	public static String insertHeader(String header, String javaSource) {
 		Matcher m = Pattern
 				.compile(

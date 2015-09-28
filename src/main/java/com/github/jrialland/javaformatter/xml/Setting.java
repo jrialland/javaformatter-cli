@@ -1,3 +1,5 @@
+/* (c) ${year} Julien Rialland
+ */
 package com.github.jrialland.javaformatter.xml;
 
 public class Setting {
@@ -23,5 +25,9 @@ public class Setting {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public static void main(String[] args) {
+
 	}
 }
