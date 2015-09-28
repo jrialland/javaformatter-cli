@@ -1,6 +1,6 @@
 # javaformatter-cli
-Quick and dirty commandline that cleans up source code the way I like.
-It uses the  Eclipse code java formatter.
+Quick and dirty commandline tool that cleans up source code the way I like.
+It uses the  Eclipse code java formatter (and its default behavoir by default).
 - It can also add a text header at the beginning of java files
 - It also formats xml files
 
