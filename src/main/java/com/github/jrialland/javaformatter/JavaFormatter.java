@@ -20,13 +20,17 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.github.jrialland.javaformatter.xml.Profile;
 import com.github.jrialland.javaformatter.xml.Profiles;
 import com.github.jrialland.javaformatter.xml.Setting;
 
-public class Formatter {
+public class JavaFormatter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JavaFormatter.class);
 
 	private String source = "1.8";
 
@@ -38,7 +42,7 @@ public class Formatter {
 
 	private CodeFormatter codeFormatter;
 
-	public Formatter(URL configUrl) throws IOException, SAXException {
+	public JavaFormatter(URL configUrl) throws IOException, SAXException {
 		options = readConfigurationFormXml(configUrl);
 		codeFormatter = ToolFactory.createCodeFormatter(options);
 	}
@@ -63,7 +67,7 @@ public class Formatter {
 		return encoding;
 	}
 
-	public Formatter() {
+	public JavaFormatter() {
 		super();
 		options = new TreeMap<>();
 		options.put(JavaCore.COMPILER_SOURCE, source);
@@ -120,15 +124,21 @@ public class Formatter {
 	}
 
 	public void formatFile(Path javaFile) throws IOException {
+		LOGGER.info("format " + javaFile.toString());
 		// backup
 		Files.copy(javaFile, Paths.get(javaFile.toString() + "~"), StandardCopyOption.REPLACE_EXISTING);
-		byte[] data = Files.readAllBytes(javaFile);
-		String formatted = format(new String(data, encoding));
-		Files.copy(new ByteArrayInputStream(formatted.getBytes()), javaFile, StandardCopyOption.REPLACE_EXISTING);
+		try {
+			byte[] data = Files.readAllBytes(javaFile);
+			String formatted = format(new String(data, encoding));
+			Files.copy(new ByteArrayInputStream(formatted.getBytes()), javaFile, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			LOGGER.error("while formatting file", e);
+			Files.copy(Paths.get(javaFile.toString() + "~"), javaFile, StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
 
 	public static void main(String[] args) {
-		String fmt = new Formatter().format("public class Hello{}");
+		String fmt = new JavaFormatter().format("public class Hello{}");
 		System.out.println(fmt);
 	}
 }
