@@ -19,23 +19,31 @@ import org.slf4j.LoggerFactory;
 
 public class XmlFormatter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(XmlFormatter.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(XmlFormatter.class);
 
 	public void formatFile(Path xmlFile) throws IOException {
 		LOGGER.info("format " + xmlFile.toString());
-		Files.copy(xmlFile, Paths.get(xmlFile.toString() + "~"), StandardCopyOption.REPLACE_EXISTING);
+		Path tmpFile = Paths.get(xmlFile.toString() + "~");
+		Files.copy(xmlFile, tmpFile,
+				StandardCopyOption.REPLACE_EXISTING);
 		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			Transformer transformer = TransformerFactory.newInstance()
+					.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			StringWriter sw = new StringWriter();
 			StreamResult r = new StreamResult(sw);
-			StreamSource s = new StreamSource(xmlFile.toUri().toURL().openStream());
+			StreamSource s = new StreamSource(xmlFile.toUri().toURL()
+					.openStream());
 			transformer.transform(s, r);
 			String xml = sw.toString();
-			Files.copy(new ByteArrayInputStream(xml.getBytes()), xmlFile, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(new ByteArrayInputStream(xml.getBytes()), xmlFile,
+					StandardCopyOption.REPLACE_EXISTING);
+			Files.delete(tmpFile);
 		} catch (Exception e) {
 			LOGGER.error("while formatting file", e);
-			Files.copy(Paths.get(xmlFile.toString() + "~"), xmlFile, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(tmpFile, xmlFile,
+					StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 
