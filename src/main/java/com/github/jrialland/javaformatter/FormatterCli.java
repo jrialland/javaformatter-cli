@@ -40,7 +40,11 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.jrialland.javaformatter.coffescript.CoffeScript;
+import com.github.jrialland.javaformatter.compass.Compass;
+import com.github.jrialland.javaformatter.freemarker.Freemarker;
 import com.github.jrialland.javaformatter.java.JavaFormatter;
+import com.github.jrialland.javaformatter.minify.Minifier;
 import com.github.jrialland.javaformatter.web.CssFormatter;
 import com.github.jrialland.javaformatter.web.HtmlFormatter;
 import com.github.jrialland.javaformatter.web.JsFormatter;
@@ -139,16 +143,27 @@ public class FormatterCli {
 				LOGGER.debug("\t- " + fmt.getName());
 			}
 		}
-				
-		FormatterVisitor visitor = new FormatterVisitor(formatters);
 
+		//apply formatters
 		if (Files.isRegularFile(path)) {
-			visitor.applyAllOnFile(path);
+			new FormatterVisitor().applyAllFormattersOnFile(path,formatters);
 		} else if (Files.isDirectory(path)) {
-			visitor.visit(path);
+			new FormatterVisitor().visitWithFormatters(path, formatters);
 		} else {
-			throw new IllegalArgumentException("File or Directory not found : " + path);
+			throw new IllegalArgumentException("unsupported path : " + path);
 		}
-
+		
+		//apply transpilers (the order is ok // each transpiler has to be applied on every files one by one as they may be chained)
+		List<Transpiler> transpilers = Arrays.asList(new Freemarker(), new CoffeScript(), new Compass(), new Minifier());
+		for(Transpiler transpiler: transpilers) {
+			if (Files.isRegularFile(path)) {
+				new FormatterVisitor().applyTranspilerOnFile(path, transpiler);
+			} else if(Files.isDirectory(path)) {
+				new FormatterVisitor().visitWithTranspiler(path, transpiler);
+			} else {
+				throw new IllegalArgumentException("unsupported path : " + path);
+			}
+		}
+		
 	}
 }

@@ -47,13 +47,7 @@ public class FormatterVisitor {
 		return LOGGER;
 	}
 
-	private List<SourceFormatter> formatters;
-
-	public FormatterVisitor(List<SourceFormatter> formatters) {
-		this.formatters = formatters;
-	}
-
-	public void visit(Path dir) {
+	public void visitWithFormatters(Path dir, final List<SourceFormatter> formatters) {
 		try {
 
 			Files.walkFileTree(dir, new FileVisitor<Path>() {
@@ -69,13 +63,13 @@ public class FormatterVisitor {
 
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					applyAllOnFile(file);
+					applyAllFormattersOnFile(file, formatters);
 					return FileVisitResult.CONTINUE;
 				}
 
 				@Override
 				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-					throw new RuntimeException("Error during formatting");
+					throw new RuntimeException("while applying formatters", exc);
 				}
 			});
 		} catch (IOException e) {
@@ -83,12 +77,53 @@ public class FormatterVisitor {
 		}
 	}
 
-	public void applyAllOnFile(Path file) throws IOException {
+	public void visitWithTranspiler(Path dir, final Transpiler transpiler) {
+		try {
+
+			Files.walkFileTree(dir, new FileVisitor<Path>() {
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					if (transpiler.accept(dir)) {
+						transpiler.transpile(dir);
+					}
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					if (transpiler.accept(file)) {
+						transpiler.transpile(file);
+					}
+					return FileVisitResult.CONTINUE;
+				}
+
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+					throw new RuntimeException("while applying transpilers", exc);
+				}
+			});
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void applyTranspilerOnFile(Path file, Transpiler transpiler) {
+		if (transpiler.accept(file)) {
+			transpiler.transpile(file);
+		}
+	}
+
+	public void applyAllFormattersOnFile(Path file, List<SourceFormatter> formatters) throws IOException {
 		Path tmpFile = Paths.get(file.toAbsolutePath().toString() + "~");
 		for (SourceFormatter formatter : formatters) {
 			if (formatter.mayApplyOn(file)) {
-				
-				//get file data
+
+				// get file data
 				byte[] data = Files.readAllBytes(file);
 
 				// backup
@@ -107,10 +142,10 @@ public class FormatterVisitor {
 
 					// rm backup
 					Files.delete(tmpFile);
-					
+
 				} catch (Exception e) {
 					getLog().error("formatter error", e);
-					
+
 					// replace file with the backup in case of error
 					Files.move(tmpFile, file, StandardCopyOption.REPLACE_EXISTING);
 				}
