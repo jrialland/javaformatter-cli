@@ -119,14 +119,16 @@ public class FormatterCli {
 			javaFormatter.setHeader(Paths.get(cmd.getOptionValue("header")).toUri().toURL());
 		}
 
-		Path path = Paths.get(args[args.length - 1]);
+		
 
 		if (args.length == 0) {
 			System.out.println("Missing file or directory parameter.");
 			showHelp(opts);
 			System.exit(255);
 		}
-
+		
+		Path path = Paths.get(args[args.length - 1]);
+		
 		List<SourceFormatter> formatters = new ArrayList<>();
 		formatters.add(javaFormatter);
 		formatters.addAll(Arrays.asList(new HtmlFormatter(), new CssFormatter(), new JsFormatter(), new XmlFormatter()));
