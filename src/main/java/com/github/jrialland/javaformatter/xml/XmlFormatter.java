@@ -51,7 +51,6 @@ public class XmlFormatter implements SourceFormatter {
 
 	@Override
 	public String apply(String xmlFile) {
-		LOGGER.info("format " + xmlFile.toString());
 		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
