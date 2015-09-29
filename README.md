@@ -26,33 +26,33 @@ Transpilers
 -----------
 
 It also features some extra tasks :
-* coffescript 1.10 compilation (http://coffeescript.org/) (turning .coffe into .coffe.js)
+* coffeeScript 1.10 compilation (http://coffeeescript.org/) (turning .coffee into .coffee.js)
 * compass compiler (http://compass-style.org/) (detect files named compass.rb as configuration file and run them)
 * freemarker : runs freemarker on all files with the .ftl extension
 * css/js minifier : if the file has ".minify" in its name, the file is minified and into .min
 
 An example :
- If you want to have some coffescript files that need to be minified :  
+ If you want to have some coffeeScript files that need to be minified :  
 ```
-MyFirstFile.coffee
-MySecondFile.coffe
+MyFirstFile.coffeee
+MySecondFile.coffee
 ```
 
-Create a file named all.minify.coffe.ftl with the following content :
+Create a file named all.minify.coffee.ftl with the following content :
 ```
-<#include "MyFirstFile.coffe" parse=false>
-<#include "MySecondFile.coffe" parse=false>
+<#include "MyFirstFile.coffee" parse=false>
+<#include "MySecondFile.coffee" parse=false>
 ```
 
 The compilation mechanism will apply this way :
 
-1) The .ftl extension means that freemarker will be executed, producing a file named all.minify.coffe
-2) The .coffe extension will trigger the coffescript compiler, and produce the all.minify.js
+1) The .ftl extension means that freemarker will be executed, producing a file named all.minify.coffee
+2) The .coffee extension will trigger the coffeeScript compiler, and produce the all.minify.js
 3) The fact that there is .minify in the name will run jsmin, and produce all.min.js
     
 By specifying the file names properly, the following chain will trigger each time :
     * merging several files into one
-    * compiling coffescript into javascript
+    * compiling coffeeScript into javascript
     * minifying the javascript
     
 

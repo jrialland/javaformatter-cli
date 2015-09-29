@@ -13,7 +13,7 @@ import org.mozilla.javascript.Scriptable;
 
 import com.github.jrialland.javaformatter.Transpiler;
 
-public class CoffeScript implements Transpiler {
+public class CoffeeScript implements Transpiler {
 
 	private Context context;
 
@@ -21,12 +21,12 @@ public class CoffeScript implements Transpiler {
 
 	private Function fnct;
 
-	public CoffeScript() {
+	public CoffeeScript() {
 		context = Context.enter();
 		scope = context.initStandardObjects();
 
-		InputStream coffeCompiler = CoffeScript.class.getClassLoader()
-				.getResourceAsStream("META-INF/resources/webjars/coffe-script/1.10.0/coffe-script.min.js");
+		InputStream coffeCompiler = CoffeeScript.class.getClassLoader()
+				.getResourceAsStream("/META-INF/resources/webjars/coffee-script/1.10.0/coffee-script.min.js");
 		try {
 			context.evaluateReader(scope, new InputStreamReader(coffeCompiler), "coffe-script.min.js", 1, null);
 			fnct = context.compileFunction(scope, "function(src){return CoffeScript.compile(src, {bare: true});}",
@@ -38,17 +38,17 @@ public class CoffeScript implements Transpiler {
 
 	@Override
 	public boolean accept(Path path) {
-		return Files.isRegularFile(path) && path.toString().endsWith(".coffe");
+		return Files.isRegularFile(path) && path.toString().endsWith(".coffee");
 	}
 
 	@Override
 	public String getName() {
-		return "CoffeScript compiler";
+		return "CoffeeScript compiler";
 	}
 
 	@Override
 	public String getType() {
-		return "coffescript";
+		return "coffeescript";
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class CoffeScript implements Transpiler {
 		try {
 			byte[] data = Files.readAllBytes(file);
 			String compiled = fnct.call(context, scope, scope, new Object[] { new String(data) }).toString();
-			Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.coffe$", ".coffe.js"));
+			Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.coffee$", ".coffee.js"));
 			Files.write(output, compiled.getBytes(), StandardOpenOption.WRITE);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

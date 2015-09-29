@@ -40,7 +40,7 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.jrialland.javaformatter.coffescript.CoffeScript;
+import com.github.jrialland.javaformatter.coffescript.CoffeeScript;
 import com.github.jrialland.javaformatter.compass.Compass;
 import com.github.jrialland.javaformatter.freemarker.Freemarker;
 import com.github.jrialland.javaformatter.java.JavaFormatter;
@@ -154,7 +154,7 @@ public class FormatterCli {
 		}
 		
 		//apply transpilers (the order is ok // each transpiler has to be applied on every files one by one as they may be chained)
-		List<Transpiler> transpilers = Arrays.asList(new Freemarker(), new CoffeScript(), new Compass(), new Minifier());
+		List<Transpiler> transpilers = Arrays.asList(new Freemarker(), new CoffeeScript(), new Compass(), new Minifier());
 		for(Transpiler transpiler: transpilers) {
 			if (Files.isRegularFile(path)) {
 				new FormatterVisitor().applyTranspilerOnFile(path, transpiler);
