@@ -38,16 +38,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.jrialland.javaformatter.SourceFormatter;
 
 public class XmlFormatter implements SourceFormatter {
 
 	private static final List<String> extensions = Arrays.asList(".xml", ".xhtml", ".svg");
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(XmlFormatter.class);
 
 	@Override
 	public String apply(String xmlFile) {
