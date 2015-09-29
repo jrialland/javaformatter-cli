@@ -23,7 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package com.github.jrialland.javaformatter;
+package com.github.jrialland.javaformatter.java;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,11 +51,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.github.jrialland.javaformatter.xml.Profile;
-import com.github.jrialland.javaformatter.xml.Profiles;
-import com.github.jrialland.javaformatter.xml.Setting;
+import com.github.jrialland.javaformatter.SourceFormatter;
+import com.github.jrialland.javaformatter.StringUtil;
 
-public class JavaFormatter {
+public class JavaFormatter implements SourceFormatter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JavaFormatter.class);
 
@@ -192,8 +191,23 @@ public class JavaFormatter {
 		}
 	}
 
-	public static void main(String[] args) {
-		String fmt = new JavaFormatter().format("public class Hello{}");
-		System.out.println(fmt);
+	@Override
+	public String apply(String fileContent) {
+		return format(fileContent);
+	}
+	
+	@Override
+	public String getName() {
+		return "Eclipse java formatter";
+	}
+	
+	@Override
+	public String getType() {
+		return "java";
+	}
+	
+	@Override
+	public boolean mayApplyOn(Path file) {
+		return Files.isRegularFile(file) && file.toString().endsWith(".java");
 	}
 }

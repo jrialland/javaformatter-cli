@@ -25,23 +25,31 @@
  */
 package com.github.jrialland.javaformatter;
 
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.jrialland.javaformatter.java.JavaFormatter;
+import com.github.jrialland.javaformatter.web.CssFormatter;
+import com.github.jrialland.javaformatter.web.HtmlFormatter;
+import com.github.jrialland.javaformatter.web.JsFormatter;
+import com.github.jrialland.javaformatter.xml.XmlFormatter;
 
 public class FormatterCli {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(FormatterCli.class);
+	
 	protected static void showHelp(Options opts) {
 		HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(FormatterCli.class.getSimpleName(), opts);
@@ -81,20 +89,20 @@ public class FormatterCli {
 			return;
 		}
 
-		JavaFormatter formatter;
+		JavaFormatter javaFormatter;
 
 		if (cmd.hasOption("conf")) {
-			formatter = new JavaFormatter(Paths.get(cmd.getOptionValue("conf")).toUri().toURL());
+			javaFormatter = new JavaFormatter(Paths.get(cmd.getOptionValue("conf")).toUri().toURL());
 		} else {
-			formatter = new JavaFormatter();
+			javaFormatter = new JavaFormatter();
 		}
 
 		if (cmd.hasOption("level")) {
-			formatter.setSource(cmd.getOptionValue("level"));
+			javaFormatter.setSource(cmd.getOptionValue("level"));
 		}
 
 		if (cmd.hasOption("encoding")) {
-			formatter.setEncoding(cmd.getOptionValue("encoding"));
+			javaFormatter.setEncoding(cmd.getOptionValue("encoding"));
 		}
 
 		if (cmd.hasOption("linesep")) {
@@ -103,11 +111,11 @@ public class FormatterCli {
 				throw new IllegalArgumentException("linesep");
 			}
 			linesep = linesep.toLowerCase().replaceAll("cr", "\r").replaceAll("lf", "\n");
-			formatter.setLineSep(linesep);
+			javaFormatter.setLineSep(linesep);
 		}
 
 		if (cmd.hasOption("header")) {
-			formatter.setHeader(Paths.get(cmd.getOptionValue("header")).toUri().toURL());
+			javaFormatter.setHeader(Paths.get(cmd.getOptionValue("header")).toUri().toURL());
 		}
 
 		Path path = Paths.get(args[args.length - 1]);
@@ -118,38 +126,23 @@ public class FormatterCli {
 			System.exit(255);
 		}
 
+		List<SourceFormatter> formatters = new ArrayList<>();
+		formatters.add(javaFormatter);
+		formatters.addAll(Arrays.asList(new HtmlFormatter(), new CssFormatter(), new JsFormatter(), new XmlFormatter()));
+
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Registered formatters : ");
+			for(SourceFormatter fmt : formatters) {
+				LOGGER.debug("\t- " + fmt.getName());
+			}
+		}
+				
+		FormatterVisitor visitor = new FormatterVisitor(formatters);
+
 		if (Files.isRegularFile(path)) {
-			formatter.formatFile(path);
+			visitor.applyAllOnFile(path);
 		} else if (Files.isDirectory(path)) {
-			final JavaFormatter finalFormatter = formatter;
-
-			Files.walkFileTree(path, new FileVisitor<Path>() {
-				@Override
-				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (file.getFileName().toString().endsWith(".java")) {
-						finalFormatter.formatFile(file);
-					} else if (file.getFileName().toString().endsWith(".xml")) {
-						new XmlFormatter().formatFile(file);
-					}
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-					throw new RuntimeException("Error during formatting");
-				}
-			});
-
+			visitor.visit(path);
 		} else {
 			throw new IllegalArgumentException("File or Directory not found : " + path);
 		}

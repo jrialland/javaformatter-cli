@@ -23,30 +23,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package com.github.jrialland.javaformatter.xml;
+package com.github.jrialland.javaformatter.java;
 
-public class Setting {
+import java.util.HashMap;
+import java.util.Map;
 
-	private String id;
+public class Profile {
 
-	private String value;
+	private String kind;
+	private Map<String, String> settings = new HashMap<>();
 
-	public Setting() {
+	public Profile() {
 	}
 
-	public String getId() {
-		return id;
+	public void addSetting(Setting setting) {
+		settings.put(setting.getId(), setting.getValue());
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public Map<String, String> getSettings() {
+		return settings;
 	}
 
-	public String getValue() {
-		return value;
+	public String getKind() {
+		return kind;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 }

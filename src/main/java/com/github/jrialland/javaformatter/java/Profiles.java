@@ -23,7 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-package com.github.jrialland.javaformatter.xml;
+package com.github.jrialland.javaformatter.java;
 
 import java.util.ArrayList;
 import java.util.List;
