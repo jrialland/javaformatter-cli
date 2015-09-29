@@ -69,9 +69,10 @@ public final class StringUtil {
 			throw new RuntimeException(e);
 		}
 	}
-
 	public static String insertHeader(String header, String javaSource) {
-		Matcher m = Pattern.compile("package|import|public|protected|private|class|interface|@enum|enum")
+		Matcher m = Pattern
+				.compile(
+						"package|import|public|protected|private|class|interface|@enum|enum")
 				.matcher(javaSource);
 		if (m.find()) {
 			int pos = m.start();
