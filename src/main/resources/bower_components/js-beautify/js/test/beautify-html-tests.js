@@ -31,7 +31,8 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         sanitytest.expect(input, expected);
         // if the expected is different from input, run it again
         // expected output should be unchanged when run twice.
-        if (expected !== input) {
+        if (expected !== input)
+        {
             sanitytest.expect(expected, expected);
         }
 
@@ -53,14 +54,16 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         sanitytest.test_function(test_html_beautifier, 'html_beautify');
         test_fragment(input, expectation);
 
-        if (opts.indent_size === 4 && input) {
+        if (opts.indent_size === 4 && input)
+        {
             wrapped_input = '<div>\n' + input.replace(/^(.+)$/mg, '    $1') + '\n    <span>inline</span>\n</div>';
             wrapped_expectation = '<div>\n' + expectation.replace(/^(.+)$/mg, '    $1') + '\n    <span>inline</span>\n</div>';
             test_fragment(wrapped_input, wrapped_expectation);
         }
     }
 
-    function unicode_char(value) {
+    function unicode_char(value)
+    {
         return String.fromCharCode(value)
     }
 
@@ -84,68 +87,68 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         test_fragment('', '\n');
         test_fragment('<div></div>', '<div></div>\n');
         test_fragment('\n');
-    
+
         // End With Newline - (eof = "")
         opts.end_with_newline = false;
         test_fragment('');
         test_fragment('<div></div>');
         test_fragment('\n', '');
-    
+
 
         // Custom Extra Liners (empty) - ()
         opts.extra_liners = [];
         test_fragment('<html><head><meta></head><body><div><p>x</p></div></body></html>', '<html>\n<head>\n    <meta>\n</head>\n<body>\n    <div>\n        <p>x</p>\n    </div>\n</body>\n</html>');
-    
+
 
         // Custom Extra Liners (default) - ()
         opts.extra_liners = null;
         test_fragment('<html><head></head><body></body></html>', '<html>\n\n<head></head>\n\n<body></body>\n\n</html>');
-    
+
 
         // Custom Extra Liners (p, string) - ()
         opts.extra_liners = 'p,/p';
         test_fragment('<html><head><meta></head><body><div><p>x</p></div></body></html>', '<html>\n<head>\n    <meta>\n</head>\n<body>\n    <div>\n\n        <p>x\n\n        </p>\n    </div>\n</body>\n</html>');
-    
+
 
         // Custom Extra Liners (p) - ()
         opts.extra_liners = ['p', '/p'];
         test_fragment('<html><head><meta></head><body><div><p>x</p></div></body></html>', '<html>\n<head>\n    <meta>\n</head>\n<body>\n    <div>\n\n        <p>x\n\n        </p>\n    </div>\n</body>\n</html>');
-    
+
 
         // Attribute Wrap - (eof = "\n", indent_attr = "    ", over80 = "\n")
         opts.wrap_attributes = 'force';
         test_fragment('<div attr0 attr1="123" data-attr2="hello    t here">This is some text</div>', '<div attr0\n    attr1="123"\n    data-attr2="hello    t here">This is some text</div>');
         test_fragment('<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here" heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>', '<div lookatthissuperduperlongattributenamewhoahcrazy0="true"\n    attr0\n    attr1="123"\n    data-attr2="hello    t here"\n    heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>');
         test_fragment('<img attr0 attr1="123" data-attr2="hello    t here"/>', '<img attr0\n    attr1="123"\n    data-attr2="hello    t here" />');
-    
+
         // Attribute Wrap - (eof = "\n", indent_attr = "    ", over80 = "\n")
         opts.wrap_attributes = 'force';
         opts.wrap_line_length = 80;
         test_fragment('<div attr0 attr1="123" data-attr2="hello    t here">This is some text</div>', '<div attr0\n    attr1="123"\n    data-attr2="hello    t here">This is some text</div>');
         test_fragment('<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here" heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>', '<div lookatthissuperduperlongattributenamewhoahcrazy0="true"\n    attr0\n    attr1="123"\n    data-attr2="hello    t here"\n    heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>');
         test_fragment('<img attr0 attr1="123" data-attr2="hello    t here"/>', '<img attr0\n    attr1="123"\n    data-attr2="hello    t here" />');
-    
+
         // Attribute Wrap - (eof = "\n", indent_attr = "        ", over80 = "\n")
         opts.wrap_attributes = 'force';
         opts.wrap_attributes_indent_size = 8;
         test_fragment('<div attr0 attr1="123" data-attr2="hello    t here">This is some text</div>', '<div attr0\n        attr1="123"\n        data-attr2="hello    t here">This is some text</div>');
         test_fragment('<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here" heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>', '<div lookatthissuperduperlongattributenamewhoahcrazy0="true"\n        attr0\n        attr1="123"\n        data-attr2="hello    t here"\n        heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>');
         test_fragment('<img attr0 attr1="123" data-attr2="hello    t here"/>', '<img attr0\n        attr1="123"\n        data-attr2="hello    t here" />');
-    
+
         // Attribute Wrap - (eof = " ", indent_attr = "", over80 = "\n")
         opts.wrap_attributes = 'auto';
         opts.wrap_line_length = 80;
         test_fragment('<div attr0 attr1="123" data-attr2="hello    t here">This is some text</div>');
         test_fragment('<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here" heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>', '<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here"\nheymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>');
         test_fragment('<img attr0 attr1="123" data-attr2="hello    t here"/>', '<img attr0 attr1="123" data-attr2="hello    t here" />');
-    
+
         // Attribute Wrap - (eof = " ", indent_attr = "", over80 = " ")
         opts.wrap_attributes = 'auto';
         opts.wrap_line_length = 0;
         test_fragment('<div attr0 attr1="123" data-attr2="hello    t here">This is some text</div>');
         test_fragment('<div lookatthissuperduperlongattributenamewhoahcrazy0="true" attr0 attr1="123" data-attr2="hello    t here" heymanimreallylongtoowhocomesupwiththesenames="false">This is some text</div>');
         test_fragment('<img attr0 attr1="123" data-attr2="hello    t here"/>', '<img attr0 attr1="123" data-attr2="hello    t here" />');
-    
+
 
 
         // Handlebars Indenting Off
@@ -212,7 +215,7 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         test_fragment('<div class="{{#if thingIs \'value\'}}{{field}}{{/if}}"></div>');
         test_fragment('<div class=\'{{#if thingIs "value"}}{{field}}{{/if}}\'></div>');
         test_fragment('<div class=\'{{#if thingIs \'value\'}}{{field}}{{/if}}\'></div>');
-    
+
         // Handlebars Indenting On - (content = "{{! comment}}")
         opts.indent_handlebars = true;
         test_fragment('{{page-title}}');
@@ -267,7 +270,7 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         test_fragment('<div class="{{#if thingIs \'value\'}}{{! comment}}{{/if}}"></div>');
         test_fragment('<div class=\'{{#if thingIs "value"}}{{! comment}}{{/if}}\'></div>');
         test_fragment('<div class=\'{{#if thingIs \'value\'}}{{! comment}}{{/if}}\'></div>');
-    
+
         // Handlebars Indenting On - (content = "{pre{{field1}} {{field2}} {{field3}}post")
         opts.indent_handlebars = true;
         test_fragment('{{page-title}}');
@@ -322,7 +325,7 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         test_fragment('<div class="{{#if thingIs \'value\'}}{pre{{field1}} {{field2}} {{field3}}post{{/if}}"></div>');
         test_fragment('<div class=\'{{#if thingIs "value"}}{pre{{field1}} {{field2}} {{field3}}post{{/if}}\'></div>');
         test_fragment('<div class=\'{{#if thingIs \'value\'}}{pre{{field1}} {{field2}} {{field3}}post{{/if}}\'></div>');
-    
+
         // Handlebars Indenting On - (content = "{{! \n mult-line\ncomment  \n     with spacing\n}}")
         opts.indent_handlebars = true;
         test_fragment('{{page-title}}');
@@ -377,7 +380,7 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         test_fragment('<div class="{{#if thingIs \'value\'}}{{! \n mult-line\ncomment  \n     with spacing\n}}{{/if}}"></div>');
         test_fragment('<div class=\'{{#if thingIs "value"}}{{! \n mult-line\ncomment  \n     with spacing\n}}{{/if}}\'></div>');
         test_fragment('<div class=\'{{#if thingIs \'value\'}}{{! \n mult-line\ncomment  \n     with spacing\n}}{{/if}}\'></div>');
-    
+
 
 
         // Unclosed html elements
@@ -607,13 +610,13 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
             '<style type="text/css">\n' +
             '    .selector {\n' +
             '        font-size: 12px;\n' +
-            '    }\n'+
+            '    }\n' +
             '</style>');
         bth('<style>.selector {font-size:12px;}</style>',
             '<style>\n' +
             '    .selector {\n' +
             '        font-size: 12px;\n' +
-            '    }\n'+
+            '    }\n' +
             '</style>');
         // END tests for issue 453
 
@@ -635,9 +638,9 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
         unformatted = opts.unformatted;
         opts.unformatted = ['custom-element'];
         test_fragment('<div>should <custom-element>not</custom-element>' +
-                      ' insert newlines</div>',
-                      '<div>should <custom-element>not</custom-element>' +
-                      ' insert newlines</div>');
+            ' insert newlines</div>',
+            '<div>should <custom-element>not</custom-element>' +
+            ' insert newlines</div>');
         opts.unformatted = unformatted;
 
         // Tests that don't pass, but probably should.
@@ -709,19 +712,19 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
             '<div>preserve newlines</div>');
 
         opts.preserve_newlines = true;
-        opts.max_preserve_newlines  = 0;
+        opts.max_preserve_newlines = 0;
         bth('<div>Should</div>\n\n\n' +
             '<div>preserve zero newlines</div>',
             '<div>Should</div>\n' +
             '<div>preserve zero newlines</div>');
 
-        opts.max_preserve_newlines  = 1;
+        opts.max_preserve_newlines = 1;
         bth('<div>Should</div>\n\n\n' +
             '<div>preserve one newline</div>',
             '<div>Should</div>\n\n' +
             '<div>preserve one newline</div>');
 
-        opts.max_preserve_newlines  = null;
+        opts.max_preserve_newlines = null;
         bth('<div>Should</div>\n\n\n' +
             '<div>preserve one newline</div>',
             '<div>Should</div>\n\n\n' +
@@ -731,6 +734,7 @@ function run_html_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_be
     beautifier_tests();
 }
 
-if (typeof exports !== "undefined") {
+if (typeof exports !== "undefined")
+{
     exports.run_html_tests = run_html_tests;
 }

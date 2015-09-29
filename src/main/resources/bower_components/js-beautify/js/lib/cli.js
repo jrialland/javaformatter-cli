@@ -32,9 +32,10 @@
 
 */
 
-var debug = process.env.DEBUG_JSBEAUTIFY || process.env.JSBEAUTIFY_DEBUG ? function() {
-        console.error.apply(console, arguments);
-    } : function() {};
+var debug = process.env.DEBUG_JSBEAUTIFY || process.env.JSBEAUTIFY_DEBUG ? function ()
+{
+    console.error.apply(console, arguments);
+} : function () {};
 
 var fs = require('fs'),
     cc = require('config-chain'),
@@ -87,7 +88,8 @@ var fs = require('fs'),
     },
     // dasherizeShorthands provides { "indent-size": ["--indent_size"] }
     // translation, allowing more convenient dashes in CLI arguments
-    shortHands = dasherizeShorthands({
+    shortHands = dasherizeShorthands(
+    {
         // Beautifier
         "s": ["--indent_size"],
         "c": ["--indent_char"],
@@ -135,37 +137,45 @@ var fs = require('fs'),
         "o": ["--outfile"],
         "r": ["--replace"],
         "q": ["--quiet"]
-        // no shorthand for "config"
+            // no shorthand for "config"
     });
 
-function verifyExists(fullPath) {
+function verifyExists(fullPath)
+{
     return fs.existsSync(fullPath) ? fullPath : null;
 }
 
-function findRecursive(dir, fileName) {
+function findRecursive(dir, fileName)
+{
     var fullPath = path.join(dir, fileName);
     var nextDir = path.dirname(dir);
     var result = verifyExists(fullPath);
 
-    if (!result && (nextDir !== dir)) {
-       result = findRecursive(nextDir, fileName);
+    if (!result && (nextDir !== dir))
+    {
+        result = findRecursive(nextDir, fileName);
     }
 
     return result;
 }
 
-function getUserHome() {
+function getUserHome()
+{
     return process.env.HOME || process.env.USERPROFILE;
 }
 
 // var cli = require('js-beautify/cli'); cli.interpret();
-var interpret = exports.interpret = function(argv, slice) {
+var interpret = exports.interpret = function (argv, slice)
+{
     var parsed = nopt(knownOpts, shortHands, argv, slice);
 
-    if (parsed.version) {
+    if (parsed.version)
+    {
         console.log(require('../../package.json').version);
         process.exit(0);
-    } else if (parsed.help) {
+    }
+    else if (parsed.help)
+    {
         usage();
         process.exit(0);
     }
@@ -179,17 +189,21 @@ var interpret = exports.interpret = function(argv, slice) {
         __dirname + '/../config/defaults.json'
     ).snapshot;
 
-    try {
+    try
+    {
         // Verify arguments
         checkType(cfg);
         checkFiles(cfg);
         debug(cfg);
 
         // Process files synchronously to avoid EMFILE error
-        cfg.files.forEach(processInputSync, {
+        cfg.files.forEach(processInputSync,
+        {
             cfg: cfg
         });
-    } catch (ex) {
+    }
+    catch (ex)
+    {
         debug(cfg);
         // usage(ex);
         console.error(ex);
@@ -199,11 +213,13 @@ var interpret = exports.interpret = function(argv, slice) {
 };
 
 // interpret args immediately when called as executable
-if (require.main === module) {
+if (require.main === module)
+{
     interpret();
 }
 
-function usage(err) {
+function usage(err)
+{
     var scriptName = getScriptName();
     var msg = [
         scriptName + '@' + require('../../package.json').version,
@@ -226,7 +242,8 @@ function usage(err) {
         '  -n, --end-with-newline        End output with newline'
     ];
 
-    switch (scriptName.split('-').shift()) {
+    switch (scriptName.split('-').shift())
+    {
         case "js":
             msg.push('  -l, --indent-level                Initial indentation level [0]');
             msg.push('  -p, --preserve-newlines           Preserve line-breaks (--no-preserve-newlines disables)');
@@ -261,41 +278,51 @@ function usage(err) {
             msg.push('  -N, --newline-between-rules             Add a newline between CSS rules.')
     }
 
-    if (err) {
+    if (err)
+    {
         msg.push(err);
         msg.push('');
         console.error(msg.join('\n'));
-    } else {
+    }
+    else
+    {
         console.log(msg.join('\n'));
     }
 }
 
 // main iterator, {cfg} passed as thisArg of forEach call
 
-function processInputSync(filepath) {
+function processInputSync(filepath)
+{
     var data = '',
         config = this.cfg,
         outfile = config.outfile,
         input;
 
     // -o passed with no value overwrites
-    if (outfile === true || config.replace) {
+    if (outfile === true || config.replace)
+    {
         outfile = filepath;
     }
 
-    if (filepath === '-') {
+    if (filepath === '-')
+    {
         input = process.stdin;
         input.resume();
         input.setEncoding('utf8');
 
-        input.on('data', function(chunk) {
+        input.on('data', function (chunk)
+        {
             data += chunk;
         });
 
-        input.on('end', function() {
+        input.on('end', function ()
+        {
             makePretty(data, config, outfile, writePretty);
         });
-    } else {
+    }
+    else
+    {
         var dir = path.dirname(outfile);
         mkdirp.sync(dir);
         data = fs.readFileSync(filepath, 'utf8');
@@ -303,43 +330,62 @@ function processInputSync(filepath) {
     }
 }
 
-function makePretty(code, config, outfile, callback) {
-    try {
+function makePretty(code, config, outfile, callback)
+{
+    try
+    {
         var fileType = getOutputType(outfile, config.type);
         var pretty = beautify[fileType](code, config);
 
         callback(null, pretty, outfile, config);
-    } catch (ex) {
+    }
+    catch (ex)
+    {
         callback(ex);
     }
 }
 
-function writePretty(err, pretty, outfile, config) {
-    if (err) {
+function writePretty(err, pretty, outfile, config)
+{
+    if (err)
+    {
         console.error(err);
         process.exit(1);
     }
 
-    if (outfile) {
-        if (isFileDifferent(outfile, pretty)) {
-            try {
+    if (outfile)
+    {
+        if (isFileDifferent(outfile, pretty))
+        {
+            try
+            {
                 fs.writeFileSync(outfile, pretty, 'utf8');
                 logToStdout('beautified ' + path.relative(process.cwd(), outfile), config);
-            } catch (ex) {
+            }
+            catch (ex)
+            {
                 onOutputError(ex);
             }
-        } else {
+        }
+        else
+        {
             logToStdout('beautified ' + path.relative(process.cwd(), outfile) + ' - unchanged', config);
         }
-    } else {
+    }
+    else
+    {
         process.stdout.write(pretty);
     }
 }
 
-function isFileDifferent(filePath, expected) {
-    try {
+function isFileDifferent(filePath, expected)
+{
+    try
+    {
         return fs.readFileSync(filePath, 'utf8') !== expected;
-    } catch (ex) {
+    }
+    catch (ex)
+    {
         // failing to read is the same as different
         return true;
     }
@@ -347,7 +393,8 @@ function isFileDifferent(filePath, expected) {
 
 // workaround the fact that nopt.clean doesn't return the object passed in :P
 
-function cleanOptions(data, types) {
+function cleanOptions(data, types)
+{
     nopt.clean(data, types);
     return data;
 }
@@ -355,10 +402,14 @@ function cleanOptions(data, types) {
 // error handler for output stream that swallows errors silently,
 // allowing the loop to continue over unwritable files.
 
-function onOutputError(err) {
-    if (err.code === 'EACCES') {
+function onOutputError(err)
+{
+    if (err.code === 'EACCES')
+    {
         console.error(err.path + " is not writable. Skipping!");
-    } else {
+    }
+    else
+    {
         console.error(err);
         process.exit(0);
     }
@@ -366,20 +417,24 @@ function onOutputError(err) {
 
 // turn "--foo_bar" into "foo-bar"
 
-function dasherizeFlag(str) {
+function dasherizeFlag(str)
+{
     return str.replace(/^\-+/, '').replace(/_/g, '-');
 }
 
 // translate weird python underscored keys into dashed argv,
 // avoiding single character aliases.
 
-function dasherizeShorthands(hash) {
+function dasherizeShorthands(hash)
+{
     // operate in-place
-    Object.keys(hash).forEach(function(key) {
+    Object.keys(hash).forEach(function (key)
+    {
         // each key value is an array
         var val = hash[key][0];
         // only dasherize one-character shorthands
-        if (key.length === 1 && val.indexOf('_') > -1) {
+        if (key.length === 1 && val.indexOf('_') > -1)
+        {
             hash[dasherizeFlag(val)] = val;
         }
     });
@@ -387,62 +442,77 @@ function dasherizeShorthands(hash) {
     return hash;
 }
 
-function getOutputType(outfile, configType) {
-    if (outfile && /\.(js|css|html)$/.test(outfile)) {
+function getOutputType(outfile, configType)
+{
+    if (outfile && /\.(js|css|html)$/.test(outfile))
+    {
         return outfile.split('.').pop();
     }
     return configType;
 }
 
-function getScriptName() {
+function getScriptName()
+{
     return path.basename(process.argv[1]);
 }
 
-function checkType(parsed) {
+function checkType(parsed)
+{
     var scriptType = getScriptName().split('-').shift();
     debug("executable type:", scriptType);
 
     var parsedType = parsed.type;
     debug("parsed type:", parsedType);
 
-    if (!parsedType) {
+    if (!parsedType)
+    {
         debug("type defaulted:", scriptType);
         parsed.type = scriptType;
     }
 }
 
-function checkFiles(parsed) {
+function checkFiles(parsed)
+{
     var argv = parsed.argv;
 
-    if (!parsed.files) {
+    if (!parsed.files)
+    {
         parsed.files = [];
-    } else {
-        if (argv.cooked.indexOf('-') > -1) {
+    }
+    else
+    {
+        if (argv.cooked.indexOf('-') > -1)
+        {
             // strip stdin path eagerly added by nopt in '-f -' case
             parsed.files.some(removeDashedPath);
         }
     }
 
-    if (argv.remain.length) {
+    if (argv.remain.length)
+    {
         // assume any remaining args are files
-        argv.remain.forEach(function(f) {
+        argv.remain.forEach(function (f)
+        {
             parsed.files.push(path.resolve(f));
         });
     }
 
-    if ('string' === typeof parsed.outfile && !parsed.files.length) {
+    if ('string' === typeof parsed.outfile && !parsed.files.length)
+    {
         // use outfile as input when no other files passed in args
         parsed.files.push(parsed.outfile);
         // operation is now an implicit overwrite
         parsed.replace = true;
     }
 
-    if (argv.original.indexOf('-') > -1) {
+    if (argv.original.indexOf('-') > -1)
+    {
         // ensure '-' without '-f' still consumes stdin
         parsed.files.push('-');
     }
 
-    if (!parsed.files.length) {
+    if (!parsed.files.length)
+    {
         throw 'Must define at least one file.';
     }
     debug('files.length ' + parsed.files.length);
@@ -452,26 +522,35 @@ function checkFiles(parsed) {
     return parsed;
 }
 
-function removeDashedPath(filepath, i, arr) {
+function removeDashedPath(filepath, i, arr)
+{
     var found = filepath.lastIndexOf('-') === (filepath.length - 1);
-    if (found) {
+    if (found)
+    {
         arr.splice(i, 1);
     }
     return found;
 }
 
-function testFilePath(filepath) {
-    try {
-        if (filepath !== "-") {
+function testFilePath(filepath)
+{
+    try
+    {
+        if (filepath !== "-")
+        {
             fs.statSync(filepath);
         }
-    } catch (err) {
+    }
+    catch (err)
+    {
         throw 'Unable to open path "' + filepath + '"';
     }
 }
 
-function logToStdout(str, config) {
-    if (typeof config.quiet === "undefined" || !config.quiet) {
+function logToStdout(str, config)
+{
+    if (typeof config.quiet === "undefined" || !config.quiet)
+    {
         console.log(str);
     }
 }

@@ -32,7 +32,8 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
         sanitytest.expect(input, expected);
         // if the expected is different from input, run it again
         // expected output should be unchanged when run twice.
-        if (expected !== input) {
+        if (expected !== input)
+        {
             sanitytest.expect(expected, expected);
         }
 
@@ -55,7 +56,8 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
         test_fragment(input, expectation);
     }
 
-    function unicode_char(value) {
+    function unicode_char(value)
+    {
         return String.fromCharCode(value)
     }
 
@@ -177,7 +179,7 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
         t('/* header');
         t('// comment');
         t('.selector1 {\n\tmargin: 0; /* This is a comment including an url http://domain.com/path/to/file.ext */\n}', '.selector1 {\n\tmargin: 0;\n\t/* This is a comment including an url http://domain.com/path/to/file.ext */\n}');
-        
+
         // single line comment support (less/sass)
         t('.tabs{\n// comment\nwidth:10px;\n}', '.tabs {\n\t// comment\n\twidth: 10px;\n}');
         t('.tabs{// comment\nwidth:10px;\n}', '.tabs {\n\t// comment\n\twidth: 10px;\n}');
@@ -189,13 +191,13 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
 
         // Psuedo-classes vs Variables
         t('@page :first {}');
-        
+
         // Assume the colon goes with the @name. If we're in LESS, this is required regardless of the at-string.
         t('@page:first {}', '@page: first {}');
         t('@page: first {}');
 
         // SASS/SCSS
-        
+
         // Basic Interpolation
         t('p {\n\t$font-size: 12px;\n\t$line-height: 30px;\n\tfont: #{$font-size}/#{$line-height};\n}');
         t('p.#{$name} {}');
@@ -234,29 +236,29 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
         // block nesting
         t("#foo {\n\tbackground-image: url(foo@2x.png);\n\t@font-face {\n\t\tfont-family: 'Bitstream Vera Serif Bold';\n\t\tsrc: url('http://developer.mozilla.org/@api/deki/files/2934/=VeraSeBd.ttf');\n\t}\n}");
         t("@media screen {\n\t#foo:hover {\n\t\tbackground-image: url(foo@2x.png);\n\t}\n\t@font-face {\n\t\tfont-family: 'Bitstream Vera Serif Bold';\n\t\tsrc: url('http://developer.mozilla.org/@api/deki/files/2934/=VeraSeBd.ttf');\n\t}\n}");
-/*
-@font-face {
-    font-family: 'Bitstream Vera Serif Bold';
-    src: url('http://developer.mozilla.org/@api/deki/files/2934/=VeraSeBd.ttf');
-}
-@media screen {
-    #foo:hover {
-        background-image: url(foo.png);
-    }
-    @media screen and (min-device-pixel-ratio: 2) {
+        /*
         @font-face {
-            font-family: 'Helvetica Neue'
+            font-family: 'Bitstream Vera Serif Bold';
+            src: url('http://developer.mozilla.org/@api/deki/files/2934/=VeraSeBd.ttf');
         }
-        #foo:hover {
-            background-image: url(foo@2x.png);
+        @media screen {
+            #foo:hover {
+                background-image: url(foo.png);
+            }
+            @media screen and (min-device-pixel-ratio: 2) {
+                @font-face {
+                    font-family: 'Helvetica Neue'
+                }
+                #foo:hover {
+                    background-image: url(foo@2x.png);
+                }
+            }
         }
-    }
-}
-*/
+        */
         t("@font-face {\n\tfont-family: 'Bitstream Vera Serif Bold';\n\tsrc: url('http://developer.mozilla.org/@api/deki/files/2934/=VeraSeBd.ttf');\n}\n@media screen {\n\t#foo:hover {\n\t\tbackground-image: url(foo.png);\n\t}\n\t@media screen and (min-device-pixel-ratio: 2) {\n\t\t@font-face {\n\t\t\tfont-family: 'Helvetica Neue'\n\t\t}\n\t\t#foo:hover {\n\t\t\tbackground-image: url(foo@2x.png);\n\t\t}\n\t}\n}");
 
         // less-css cases
-        t('.well{@well-bg:@bg-color;@well-fg:@fg-color;}','.well {\n\t@well-bg: @bg-color;\n\t@well-fg: @fg-color;\n}');
+        t('.well{@well-bg:@bg-color;@well-fg:@fg-color;}', '.well {\n\t@well-bg: @bg-color;\n\t@well-fg: @fg-color;\n}');
         t('.well {&.active {\nbox-shadow: 0 1px 1px @border-color, 1px 0 1px @border-color;}}',
             '.well {\n' +
             '\t&.active {\n' +
@@ -330,6 +332,7 @@ function run_css_tests(test_obj, Urlencoded, js_beautify, html_beautify, css_bea
     beautifier_tests();
 }
 
-if (typeof exports !== "undefined") {
+if (typeof exports !== "undefined")
+{
     exports.run_css_tests = run_css_tests;
 }
