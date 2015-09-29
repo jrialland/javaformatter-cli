@@ -48,8 +48,9 @@ import com.github.jrialland.javaformatter.xml.XmlFormatter;
 
 public class FormatterCli {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FormatterCli.class);
-	
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FormatterCli.class);
+
 	protected static void showHelp(Options opts) {
 		HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(FormatterCli.class.getSimpleName(), opts);

@@ -55,29 +55,30 @@ public final class StringUtil {
 			}
 			sw.append(" */\n");
 			String comment = sw.toString();
-			
+
 			Date date = new Date();
-			
+
 			comment = comment.replaceAll("\\$\\{year\\}", new SimpleDateFormat("yyyy").format(date));
 			comment = comment.replaceAll("\\$\\{month\\}", new SimpleDateFormat("MM").format(date));
 			comment = comment.replaceAll("\\$\\{day\\}", new SimpleDateFormat("dd").format(date));
-			for(Entry<String, String> entry : System.getenv().entrySet()) {
-				comment = comment.replaceAll("\\$\\{env\\."+entry.getKey()+"\\}", entry.getValue());
+			for (Entry<String, String> entry : System.getenv().entrySet()) {
+				comment = comment.replaceAll("\\$\\{env\\." + entry.getKey() + "\\}", entry.getValue());
 			}
 			return comment;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
 	public static String insertHeader(String header, String javaSource) {
-		Matcher m = Pattern
-				.compile(
-						"package|import|public|protected|private|class|interface|@enum|enum")
+		Matcher m = Pattern.compile("package|import|public|protected|private|class|interface|@enum|enum")
 				.matcher(javaSource);
 		if (m.find()) {
-			return header + javaSource.substring(m.start());
-		} else {
-			return javaSource;
+			int pos = m.start();
+			if (pos == 0 || javaSource.charAt(pos - 1) == '\n') {
+				return header + javaSource.substring(m.start());
+			}
 		}
+		return javaSource;
 	}
 }
