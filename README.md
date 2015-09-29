@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jrialland/javaformatter-cli.svg)](https://travis-ci.org/jrialland/javaformatter-cli)
 
-THis project evolved from a Quick and dirty commandline tool that formatted java source code to something more evoluted.
+This project evolved from a Quick and dirty commandline tool that formatted java source code to something more evoluted.
 
 It scans source code directories and beautifies/formats the files it can, I add support for more file types when I can.
 
