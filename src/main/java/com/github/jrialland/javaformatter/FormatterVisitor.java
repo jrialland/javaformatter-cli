@@ -96,9 +96,7 @@ public class FormatterVisitor {
 
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (transpiler.accept(file)) {
-						transpiler.transpile(file);
-					}
+					applyTranspilerOnFile(file, transpiler);
 					return FileVisitResult.CONTINUE;
 				}
 
@@ -114,7 +112,7 @@ public class FormatterVisitor {
 
 	public void applyTranspilerOnFile(Path file, Transpiler transpiler) {
 		if (transpiler.accept(file)) {
-		  LOGGER.info(String.format("Applying %s on %s", transpiler.getName(), file.toString()));
+		  getLog().info(String.format("Applying %s on %s", transpiler.getName(), file.toString()));
 			transpiler.transpile(file);
 		}
 	}
