@@ -51,7 +51,11 @@ public class Freemarker implements Transpiler {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
+	}
+	
+	@Override
+	public String getShortdesc() {
+	  return "Runs freemarker template, applies on *.ftl files";
 	}
 
 }

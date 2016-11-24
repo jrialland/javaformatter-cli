@@ -12,4 +12,5 @@ public interface Transpiler {
 	
 	public String getType();
 	
+	public String getShortdesc();
 }

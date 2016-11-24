@@ -89,4 +89,8 @@ public class Compass implements Transpiler {
 		return "sass";
 	}
 
+	@Override
+	public String getShortdesc() {
+	  return "Runs compass (http://compass-style.org/) on compass.rb";
+	}
 }

@@ -80,4 +80,9 @@ public class Minifier implements Transpiler {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public String getShortdesc() {
+	  return "minifies css and js files. Applies on files named *.css.minify or *.js.minify";
+	}
 }

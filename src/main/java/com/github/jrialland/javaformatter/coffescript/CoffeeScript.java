@@ -63,4 +63,8 @@ public class CoffeeScript implements Transpiler {
 		}
 	}
 
+	@Override
+	public String getShortdesc() {
+	  return "Runs coffescript compiler on *.coffe files";
+	}
 }
