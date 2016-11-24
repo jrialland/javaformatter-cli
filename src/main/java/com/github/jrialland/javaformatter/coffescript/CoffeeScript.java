@@ -1,3 +1,4 @@
+
 package com.github.jrialland.javaformatter.coffescript;
 
 import java.io.InputStream;
@@ -7,64 +8,63 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import com.github.jrialland.javaformatter.Transpiler;
 
 public class CoffeeScript implements Transpiler {
 
-	private Context context;
+  private ScriptEngine scriptEngine;
 
-	private Scriptable scope;
+  public CoffeeScript() {
 
-	private Function fnct;
+    scriptEngine = new ScriptEngineManager().getEngineByName("js");
 
-	public CoffeeScript() {
-		context = Context.enter();
-		scope = context.initStandardObjects();
+    InputStream coffeCompiler = CoffeeScript.class.getClassLoader()
+        .getResourceAsStream("META-INF/resources/webjars/coffee-script/1.11.0/coffee-script.min.js");
+    try {
+      scriptEngine.eval(new InputStreamReader(coffeCompiler));
+      scriptEngine.eval("var __coffescript__compile__ = function(src){return CoffeScript.compile(src, {bare: true});}");
 
-		InputStream coffeCompiler = CoffeeScript.class.getClassLoader()
-				.getResourceAsStream("META-INF/resources/webjars/coffee-script/1.11.0/coffee-script.min.js");
-		try {
-			context.evaluateReader(scope, new InputStreamReader(coffeCompiler), "coffe-script.min.js", 1, null);
-			fnct = context.compileFunction(scope, "function(src){return CoffeScript.compile(src, {bare: true});}",
-					"fnct", 1, null);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	@Override
-	public boolean accept(Path path) {
-		return Files.isRegularFile(path) && path.toString().endsWith(".coffee");
-	}
+  @Override
+  public boolean accept(Path path) {
+    return Files.isRegularFile(path) && path.toString().endsWith(".coffee");
+  }
 
-	@Override
-	public String getName() {
-		return "CoffeeScript compiler";
-	}
+  @Override
+  public String getName() {
+    return "CoffeeScript compiler";
+  }
 
-	@Override
-	public String getType() {
-		return "coffeescript";
-	}
+  @Override
+  public String getType() {
+    return "coffeescript";
+  }
 
-	@Override
-	public void transpile(Path file) {
-		try {
-			byte[] data = Files.readAllBytes(file);
-			String compiled = fnct.call(context, scope, scope, new Object[] { new String(data) }).toString();
-			Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.coffee$", ".coffee.js"));
-			Files.write(output, compiled.getBytes(), StandardOpenOption.WRITE);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+  @Override
+  public void transpile(Path file) {
+    try {
+      byte[] data = Files.readAllBytes(file);
+      Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.coffee$", ".coffee.js"));
+      Bindings bindings = scriptEngine.createBindings();
+      bindings.put("coffescript_src", new String(data));
+      Object coffeSrc = scriptEngine.eval("__coffescript__compile__(coffescript_src)", bindings);
+      Files.write(output, coffeSrc.toString().getBytes(), StandardOpenOption.WRITE);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	@Override
-	public String getShortdesc() {
-	  return "Runs coffescript compiler on *.coffe files";
-	}
+  @Override
+  public String getShortdesc() {
+    return "Runs coffescript compiler on *.coffe files";
+  }
+
 }
