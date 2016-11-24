@@ -64,6 +64,7 @@ public abstract class AbstractJsBeautifyFormatter implements SourceFormatter{
 	@Override
 	public String apply(String js) {
 		Object result = fnct.call(context, scope, scope, new Object[] { js });
+		System.out.println(result.getClass());
 		return result.toString();
 	}
 }

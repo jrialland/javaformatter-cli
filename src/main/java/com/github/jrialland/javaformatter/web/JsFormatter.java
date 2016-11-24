@@ -27,6 +27,7 @@ package com.github.jrialland.javaformatter.web;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class JsFormatter extends AbstractJsBeautifyFormatter {
 	
 	public JsFormatter() {
 		super("bower_components/js-beautify/js/lib/beautify.js", "js_beautify",
-				"{space_after_anon_function:true, brace_style:'expand', end_with_newline:true}");
+				"{space_after_anon_function:true, brace_style:'collapse', end_with_newline:true}");
 	}
 
 	@Override
@@ -66,4 +67,9 @@ public class JsFormatter extends AbstractJsBeautifyFormatter {
 	public String getShortDesc() {
 	  return "Formats javascript files";
 	}
+	
+	public static void main(String[] args) throws Exception {
+    String js = new JsFormatter().apply(new String(Files.readAllBytes(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/test.minify.js"))));
+    System.out.println(js);
+  }
 }

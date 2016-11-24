@@ -24,7 +24,7 @@ public class Minifier implements Transpiler {
   private static final Logger getLog() {
     return LOGGER;
   }
-  
+
   @Override
   public boolean accept(Path path) {
     return Files.isRegularFile(path) && path.getFileName().toString().contains(".minify");
@@ -62,7 +62,7 @@ public class Minifier implements Transpiler {
       if (line < 0) {
         getLog().error(message);
       } else {
-        getLog().error(String.format("[%d:%d] : %s",  line, lineOffset, message));
+        getLog().error(String.format("[%d:%d] : %s", line, lineOffset, message));
       }
     }
   };
@@ -100,7 +100,4 @@ public class Minifier implements Transpiler {
     return "Minifies css and js files. Applies on files named *.css.minify or *.js.minify";
   }
 
-  public static void main(String[] args) {
-    new Minifier().transpile(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/test.minify.js"));
-  }
 }
