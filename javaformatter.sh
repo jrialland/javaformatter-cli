@@ -1,6 +1,22 @@
 #!/bin/bash
 set -e
-tmpdir=$HOME/.javaformatter
+
+export thisscript=$(readlink -m $0)
+export thisdir=$(dirname $sthisscript)
+
+case $1 in:
+--refresh)
+    rm $thisdir/.javaformatter -rf
+    shift
+    ;;
+esac
+
+if [ -f $thisdir/.javaformatter.conf ]; then
+    export tmpdir=$(cat $thisdir/.javaformatter)
+else
+    export tmpdir=$(mktmp -d)
+    echo $tmpdir > $thisdir/.javaformatter
+fi
 
 jarfile=$tmpdir/javaformatter-cli/target/javaformatter-cli-1.0-SNAPSHOT.jar
 
@@ -25,11 +41,11 @@ if [ ! -f $jarfile ]; then
     popd >/dev/null
     popd >/dev/null
 fi
+
 CLASSPATH=$jarfile
 for j in `find $tmpdir/javaformatter-cli/target/dependency -name "*.jar"`; do
     export CLASSPATH=$CLASSPATH:$j
 done
-
 
 #export some env vars to the formatter app, these will be available as 
 #placeholders in java headers (i.e ${env.WHOAMI}
