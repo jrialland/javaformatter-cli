@@ -46,6 +46,11 @@ public class HtmlFormatter extends AbstractJsBeautifyFormatter{
 	
 	@Override
 	public boolean mayApplyOn(Path file) {
-		return Files.isRegularFile(file) && file.toString().endsWith(".html");
+		return Files.isRegularFile(file) && file.toString().toLowerCase().endsWith(".html");
+	}
+	
+	@Override
+	public String getShortDesc() {
+	  return "Beautifies .html files";
 	}
 }

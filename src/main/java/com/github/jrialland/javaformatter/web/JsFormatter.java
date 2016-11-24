@@ -62,4 +62,8 @@ public class JsFormatter extends AbstractJsBeautifyFormatter {
 		return false;
 	}
 
+	@Override
+	public String getShortDesc() {
+	  return "Formats javascript files";
+	}
 }

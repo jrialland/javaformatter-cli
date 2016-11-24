@@ -48,4 +48,9 @@ public class CssFormatter extends AbstractJsBeautifyFormatter {
 	public String getType() {
 		return "css";
 	}
+	
+	@Override
+	public String getShortDesc() {
+	  return "Beautifies .css files";
+	}
 }

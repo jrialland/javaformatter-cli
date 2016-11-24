@@ -37,4 +37,5 @@ public interface SourceFormatter {
 
 	public String apply(String fileContent);
 
+	public String getShortDesc();
 }

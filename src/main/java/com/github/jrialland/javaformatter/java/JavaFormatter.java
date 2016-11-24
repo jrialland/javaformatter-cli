@@ -210,4 +210,9 @@ public class JavaFormatter implements SourceFormatter {
 	public boolean mayApplyOn(Path file) {
 		return Files.isRegularFile(file) && file.toString().endsWith(".java");
 	}
+	
+	@Override
+	public String getShortDesc() {
+	  return "Formats java source files";
+	}
 }
