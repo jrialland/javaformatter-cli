@@ -76,12 +76,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.7.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.darrinholst</groupId>
 			<artifactId>sass-java</artifactId>
 			<version>3.4.4</version>
