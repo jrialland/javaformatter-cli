@@ -62,7 +62,7 @@ public class Minifier implements Transpiler {
       if (line < 0) {
         getLog().error(message);
       } else {
-        getLog().error(line + ':' + lineOffset + ':' + message);
+        getLog().error(String.format("[%d:%d] : %s",  line, lineOffset, message));
       }
     }
   };
