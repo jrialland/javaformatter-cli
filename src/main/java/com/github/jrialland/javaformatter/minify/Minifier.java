@@ -3,6 +3,7 @@ package com.github.jrialland.javaformatter.minify;
 
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,6 +21,10 @@ public class Minifier implements Transpiler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Minifier.class);
 
+  private static final Logger getLog() {
+    return LOGGER;
+  }
+  
   @Override
   public boolean accept(Path path) {
     return Files.isRegularFile(path) && path.getFileName().toString().contains(".minify");
@@ -40,7 +45,7 @@ public class Minifier implements Transpiler {
     @Override
     public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
       if (line < 0) {
-        LOGGER.warn(message);
+        getLog().warn(message);
       } else {
         LOGGER.warn(line + ':' + lineOffset + ':' + message);
       }
@@ -55,21 +60,19 @@ public class Minifier implements Transpiler {
     @Override
     public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
       if (line < 0) {
-        LOGGER.error(message);
+        getLog().error(message);
       } else {
-        LOGGER.error(line + ':' + lineOffset + ':' + message);
+        getLog().error(line + ':' + lineOffset + ':' + message);
       }
     }
   };
 
   @Override
   public void transpile(Path file) {
-
+    Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.minify", ".min"));
     try {
       String data = new String(Files.readAllBytes(file)).trim();
-      Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.minify", ".min"));
       FileWriter out = new FileWriter(output.toFile());
-
       if (!data.isEmpty()) {
         if (file.toString().endsWith(".css")) {
           CssCompressor cssCompressor = new CssCompressor(new FileReader(file.toFile()));
@@ -83,16 +86,21 @@ public class Minifier implements Transpiler {
       out.flush();
       out.close();
     } catch (Exception e) {
+      try {
+        Files.deleteIfExists(output);
+      } catch (IOException e2) {
+        getLog().error("could not delete file", e2);
+      }
       throw new RuntimeException(e);
     }
   }
 
   @Override
   public String getShortdesc() {
-    return "minifies css and js files. Applies on files named *.css.minify or *.js.minify";
+    return "Minifies css and js files. Applies on files named *.css.minify or *.js.minify";
   }
 
   public static void main(String[] args) {
-    new Minifier().transpile(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/test.min.js"));
+    new Minifier().transpile(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/test.minify.js"));
   }
 }

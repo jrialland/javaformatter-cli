@@ -15,8 +15,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <maven.compiler.source>1.8</maven.compiler.source>
-	    <maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<build>
@@ -97,6 +97,12 @@
 			<groupId>com.yahoo.platform.yui</groupId>
 			<artifactId>yuicompressor</artifactId>
 			<version>2.4.8</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>js</artifactId>
+					<groupId>rhino</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>
