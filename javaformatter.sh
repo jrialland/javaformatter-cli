@@ -2,19 +2,19 @@
 set -e
 
 export thisscript=$(readlink -m $0)
-export thisdir=$(dirname $sthisscript)
+export thisdir=$(dirname $thisscript)
 
-case $1 in:
---refresh)
+case $1 in
+"--refresh")
     rm $thisdir/.javaformatter -rf
     shift
     ;;
 esac
 
-if [ -f $thisdir/.javaformatter.conf ]; then
+if [ -f $thisdir/.javaformatter ]; then
     export tmpdir=$(cat $thisdir/.javaformatter)
 else
-    export tmpdir=$(mktmp -d)
+    export tmpdir=$(mktemp -d)
     echo $tmpdir > $thisdir/.javaformatter
 fi
 
