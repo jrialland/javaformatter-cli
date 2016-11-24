@@ -64,15 +64,21 @@ public class Minifier implements Transpiler {
 
   @Override
   public void transpile(Path file) {
+
     try {
+      String data = new String(Files.readAllBytes(file)).trim();
       Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.minify", ".min"));
       FileWriter out = new FileWriter(output.toFile());
-      if (file.toString().endsWith(".css")) {
-        CssCompressor cssCompressor = new CssCompressor(new FileReader(file.toFile()));
-        cssCompressor.compress(out, 0);
-      } else if (file.toString().endsWith(".js")) {
-        JavaScriptCompressor jsCompressor = new JavaScriptCompressor(new FileReader(file.toFile()), reporter);
-        jsCompressor.compress(out, 0, true, false, false, false);
+
+      if (!data.isEmpty()) {
+        if (file.toString().endsWith(".css")) {
+          CssCompressor cssCompressor = new CssCompressor(new FileReader(file.toFile()));
+          cssCompressor.compress(out, 0);
+        } else if (file.toString().endsWith(".js")) {
+          JavaScriptCompressor jsCompressor = new JavaScriptCompressor(new FileReader(file.toFile()), reporter);
+          jsCompressor.compress(out, 0, true, false, false, false);
+
+        }
       }
       out.flush();
       out.close();
@@ -86,4 +92,7 @@ public class Minifier implements Transpiler {
     return "minifies css and js files. Applies on files named *.css.minify or *.js.minify";
   }
 
+  public static void main(String[] args) {
+    new Minifier().transpile(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/test.min.js"));
+  }
 }
