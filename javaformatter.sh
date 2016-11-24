@@ -33,7 +33,7 @@ done
 
 #export some env vars to the formatter app, these will be available as 
 #placeholders in java headers (i.e ${env.WHOAMI}
-export WHOAMI=`whoami`
-
+export WHOAMI=(whoami)
+export HOSTNAME=$(hostname)
 java -cp "$CLASSPATH" com.github.jrialland.javaformatter.FormatterCli $@
 

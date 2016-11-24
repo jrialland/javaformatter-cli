@@ -113,7 +113,7 @@ public class FormatterCli {
 		if (cmd.hasOption("linesep")) {
 			String linesep = cmd.getOptionValue("linesep");
 			if (!Arrays.asList("lf", "cr", "crlf").contains(linesep)) {
-				throw new IllegalArgumentException("linesep");
+				throw new IllegalArgumentException("linesep : must be one of ['lf', 'cr', 'crlf']");
 			}
 			linesep = linesep.toLowerCase().replaceAll("cr", "\r").replaceAll("lf", "\n");
 			javaFormatter.setLineSep(linesep);

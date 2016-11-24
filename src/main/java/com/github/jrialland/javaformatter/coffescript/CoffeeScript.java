@@ -26,7 +26,7 @@ public class CoffeeScript implements Transpiler {
 		scope = context.initStandardObjects();
 
 		InputStream coffeCompiler = CoffeeScript.class.getClassLoader()
-				.getResourceAsStream("/META-INF/resources/webjars/coffee-script/1.10.0/coffee-script.min.js");
+				.getResourceAsStream("META-INF/resources/webjars/coffee-script/1.10.0/coffee-script.min.js");
 		try {
 			context.evaluateReader(scope, new InputStreamReader(coffeCompiler), "coffe-script.min.js", 1, null);
 			fnct = context.compileFunction(scope, "function(src){return CoffeScript.compile(src, {bare: true});}",
