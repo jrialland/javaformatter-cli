@@ -114,6 +114,7 @@ public class FormatterVisitor {
 
 	public void applyTranspilerOnFile(Path file, Transpiler transpiler) {
 		if (transpiler.accept(file)) {
+		  LOGGER.info(String.format("Applying %s on %s", transpiler.getName(), file.toString()));
 			transpiler.transpile(file);
 		}
 	}
