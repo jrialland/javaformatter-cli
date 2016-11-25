@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -19,15 +20,11 @@ public class CoffeeScript implements Transpiler {
   private ScriptEngine scriptEngine;
 
   public CoffeeScript() {
-
     scriptEngine = new ScriptEngineManager().getEngineByName("js");
-
     InputStream coffeCompiler = CoffeeScript.class.getClassLoader()
         .getResourceAsStream("META-INF/resources/webjars/coffee-script/1.11.0/coffee-script.min.js");
     try {
-      scriptEngine.eval(new InputStreamReader(coffeCompiler));
-      scriptEngine.eval("var __coffescript__compile__ = function(src){return CoffeScript.compile(src, {bare: true});}");
-
+      scriptEngine.eval(new InputStreamReader(coffeCompiler));      
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -53,9 +50,12 @@ public class CoffeeScript implements Transpiler {
     try {
       byte[] data = Files.readAllBytes(file);
       Path output = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.coffee$", ".coffee.js"));
-      Bindings bindings = scriptEngine.createBindings();
+      if(!Files.isRegularFile(output)){
+        Files.createFile(output);
+      }
+      Bindings bindings = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
       bindings.put("coffescript_src", new String(data));
-      Object coffeSrc = scriptEngine.eval("__coffescript__compile__(coffescript_src)", bindings);
+      Object coffeSrc = scriptEngine.eval("CoffeeScript.compile(coffescript_src, {bare: true})", bindings);
       Files.write(output, coffeSrc.toString().getBytes(), StandardOpenOption.WRITE);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -64,7 +64,10 @@ public class CoffeeScript implements Transpiler {
 
   @Override
   public String getShortdesc() {
-    return "Runs coffescript compiler on *.coffe files";
+    return "Runs coffescript compiler on *.coffee files";
   }
 
+  public static void main(String[] args) {
+    new CoffeeScript().transpile(Paths.get("/home/jrialland/dev/gitprojects/androidtest/test/testcoffee.coffee"));
+  }
 }
