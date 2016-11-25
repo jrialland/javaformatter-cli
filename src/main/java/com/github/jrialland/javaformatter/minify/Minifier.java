@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
@@ -27,7 +28,9 @@ public class Minifier implements Transpiler {
 
   @Override
   public boolean accept(Path path) {
-    return Files.isRegularFile(path) && path.getFileName().toString().contains(".minify");
+    boolean hasMinify = Files.isRegularFile(path) && path.getFileName().toString().contains(".minify");
+    String extension = path.getFileName().toString().toLowerCase().replaceFirst("^.*\\.([^\\.]+)$", "$1");
+    return hasMinify && Arrays.asList("js", "css").contains(extension);
   }
 
   @Override
@@ -74,10 +77,10 @@ public class Minifier implements Transpiler {
       String data = new String(Files.readAllBytes(file)).trim();
       FileWriter out = new FileWriter(output.toFile());
       if (!data.isEmpty()) {
-        if (file.toString().endsWith(".css")) {
+        if (file.toString().toLowerCase().endsWith(".css")) {
           CssCompressor cssCompressor = new CssCompressor(new FileReader(file.toFile()));
           cssCompressor.compress(out, 0);
-        } else if (file.toString().endsWith(".js")) {
+        } else if (file.toString().toLowerCase().endsWith(".js")) {
           JavaScriptCompressor jsCompressor = new JavaScriptCompressor(new FileReader(file.toFile()), reporter);
           jsCompressor.compress(out, 0, true, false, false, false);
 
