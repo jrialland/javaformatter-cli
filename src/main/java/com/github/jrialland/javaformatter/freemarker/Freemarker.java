@@ -64,6 +64,7 @@ public class Freemarker implements Transpiler {
 
       Path outFile = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.ftl$", ""));
       FileWriter fw = new FileWriter(outFile.toFile());
+      getLog().debug(String.format("%s",model));
       template.process(model, fw);
       fw.flush();
       fw.close();
@@ -86,6 +87,7 @@ public class Freemarker implements Transpiler {
       if (objChild instanceof String) {
         part = part + "_";
       }
+      @SuppressWarnings("unchecked")
       Map<String, Object> child = (Map<String, Object>) current.get(part);
       if (child == null) {
         child = new HashMap<>();

@@ -26,7 +26,8 @@ public final class PathUtil {
 
 		try {
 			String newContent = operation.doWithContent(path, new String(data));
-			Files.copy(new ByteArrayInputStream(newContent.getBytes()), path, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(new ByteArrayInputStream(newContent.getBytes()), path,
+					StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {
 			// revert
 			try {
