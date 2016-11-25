@@ -62,8 +62,6 @@ public class Freemarker implements Transpiler {
         insertValue(model, key, value);
       }
 
-      System.out.println(model);
-
       Path outFile = Paths.get(file.toAbsolutePath().toString().replaceFirst("\\.ftl$", ""));
       FileWriter fw = new FileWriter(outFile.toFile());
       template.process(model, fw);
