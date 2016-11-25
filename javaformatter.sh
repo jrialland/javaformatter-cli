@@ -48,8 +48,7 @@ for j in `find $tmpdir/javaformatter-cli/target/dependency -name "*.jar"`; do
 done
 
 #export some env vars to the formatter app, these will be available as 
-#placeholders in java headers (i.e ${env.WHOAMI}
-export WHOAMI=(whoami)
+#placeholders in java headers (i.e ${env.HOSTNAME}
 export HOSTNAME=$(hostname)
 java -cp "$CLASSPATH" com.github.jrialland.javaformatter.FormatterCli $@
 
