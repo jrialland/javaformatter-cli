@@ -107,7 +107,7 @@ public class FormatterCli {
     opts.addOption(help);
     
     Option debug = Option.builder("d").longOpt("debug").hasArg(false).desc("Enable debugging").build();
-    
+    opts.addOption(debug);
     
     CommandLine cmd = new DefaultParser().parse(opts, args);
     if(cmd.hasOption("d")) {
@@ -147,8 +147,6 @@ public class FormatterCli {
       }
       linesep = linesep.toLowerCase().replaceAll("cr", "\r").replaceAll("lf", "\n");
       javaFormatter.setLineSep(linesep);
-    } else {
-      javaFormatter.setLineSep(System.lineSeparator());
     }
 
     if (cmd.hasOption("header")) {
