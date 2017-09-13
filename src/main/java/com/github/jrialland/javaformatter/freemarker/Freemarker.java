@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, Julien Rialland
+/* Copyright (c) 2016-2017, Julien Rialland
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
