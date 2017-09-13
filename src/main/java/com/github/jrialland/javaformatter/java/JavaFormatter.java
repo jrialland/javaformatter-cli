@@ -168,6 +168,7 @@ public class JavaFormatter implements SourceFormatter {
     if (header == null) {
       return source;
     } else {
+      header = header.replaceAll("\r?\n", lineSep);
       return StringUtil.insertHeader(header, source);
     }
   }
