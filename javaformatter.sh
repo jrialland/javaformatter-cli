@@ -4,9 +4,11 @@ set -e
 export thisscript=$(readlink -m $0)
 export thisdir=$(dirname $thisscript)
 
+export installdir=$HOME/.javaformatter_install
+
 case $1 in
 "--refresh")
-    rm $thisdir/.javaformatter -rf
+    rm $installdir -rf
     shift
     ;;
 esac
@@ -14,8 +16,7 @@ esac
 if [ -f $thisdir/.javaformatter ]; then
     export tmpdir=$(cat $thisdir/.javaformatter)
 else
-    export tmpdir=$(mktemp -d)
-    echo $tmpdir > $thisdir/.javaformatter
+    export tmpdir=$installdir
 fi
 
 jarfile=$tmpdir/javaformatter-cli/target/javaformatter-cli-1.0-SNAPSHOT.jar
@@ -23,7 +24,7 @@ jarfile=$tmpdir/javaformatter-cli/target/javaformatter-cli-1.0-SNAPSHOT.jar
 function check_command {
     which $1 > /dev/null
     if [ $? != 0 ]; then
-         echo "$1 is not available" >&2
+         echo "error : the $1 command is not available" >&2
          exit 1
     fi 
 }
@@ -50,5 +51,5 @@ done
 #export some env vars to the formatter app, these will be available as 
 #placeholders in java headers (i.e ${env.HOSTNAME}
 export HOSTNAME=$(hostname)
-java -cp "$CLASSPATH" com.github.jrialland.javaformatter.FormatterCli $@
+java -cp "$CLASSPATH" com.github.jrialland.javaformatter.FormatterCli "$@"
 
