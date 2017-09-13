@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<profiles version="12">
+<?xml version="1.0" encoding="UTF-8"?><profiles version="12">
 <profile kind="CodeFormatterProfile" name="Eclipse - Arkéa" version="12">
 <setting id="org.eclipse.jdt.core.formatter.insert_space_after_ellipsis" value="insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_enum_declarations" value="insert"/>
